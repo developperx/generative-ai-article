@@ -1,0 +1,17 @@
+{
+  "name": "generative-ai-trends",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "description": "生成AIの活用トレンドを自動集約する静的Webアプリ（完全無料・RSS/公開APIベース）",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "fetch": "node scripts/fetch-feeds.mjs"
+  },
+  "dependencies": {
+    "astro": "^5.6.0",
+    "rss-parser": "^3.13.0"
+  }
+}

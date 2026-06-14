@@ -1,0 +1,72 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+}
+const {
+  title = '生成AIトレンド | 最新の活用情報をまとめてチェック',
+  description = '生成AIの活用方法に関する最新トレンドを、公式RSS・公開APIから自動集約。タイトルと出典・リンク中心で素早くチェックできます。',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="ja" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="color-scheme" content="light dark" />
+    <title>{title}</title>
+    <!-- フラッシュ防止: テーマを描画前に適用 -->
+    <script is:inline>
+      const t = localStorage.getItem('theme');
+      if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.dataset.theme = 'dark';
+      }
+    </script>
+  </head>
+  <body>
+    <slot />
+    <style is:global>
+      :root {
+        --bg: #f7f8fa;
+        --surface: #ffffff;
+        --border: #e6e8eb;
+        --text: #1a1d21;
+        --muted: #6b7280;
+        --accent: #4f46e5;
+        --accent-soft: #eef2ff;
+        --chip: #f1f3f5;
+        --shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.04);
+      }
+      :root[data-theme='dark'] {
+        --bg: #0f1115;
+        --surface: #171a20;
+        --border: #262b33;
+        --text: #e6e8eb;
+        --muted: #9aa3af;
+        --accent: #818cf8;
+        --accent-soft: #1e2230;
+        --chip: #21262e;
+        --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        -webkit-text-size-adjust: 100%;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: system-ui, -apple-system, 'Segoe UI', 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+        line-height: 1.6;
+        transition: background 0.2s ease, color 0.2s ease;
+      }
+      a {
+        color: inherit;
+      }
+    </style>
+  </body>
+</html>

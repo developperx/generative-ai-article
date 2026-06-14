@@ -1,0 +1,22 @@
+{
+  "comment": "ルールベースのタグ付け辞書。記事のタイトル＋抜粋に対して、各タグのキーワード（部分一致・大文字小文字を無視）が含まれていればそのタグを付与します。aiKeywords は keywordFilter:true のソースで『生成AI関連か』を判定するために使います。",
+  "aiKeywords": [
+    "生成AI", "生成ai", "生成系AI", "ジェネレーティブ", "Generative AI",
+    "ChatGPT", "GPT-", "GPT4", "GPT5", "OpenAI", "Anthropic", "Claude",
+    "Gemini", "Llama", "Mistral", "Copilot", "Cursor",
+    "LLM", "大規模言語モデル", "言語モデル",
+    "画像生成", "動画生成", "Stable Diffusion", "Midjourney", "DALL",
+    "プロンプト", "AIエージェント", "RAG"
+  ],
+  "tags": {
+    "LLM": ["LLM", "大規模言語モデル", "言語モデル", "GPT", "Claude", "Gemini", "Llama", "Mistral", "ChatGPT"],
+    "画像生成": ["画像生成", "Stable Diffusion", "Midjourney", "DALL", "img2img", "text-to-image", "イラスト生成"],
+    "動画生成": ["動画生成", "Sora", "Runway", "video generation", "text-to-video"],
+    "音声・音楽": ["音声合成", "音声生成", "音楽生成", "TTS", "Whisper", "Suno", "ボイス"],
+    "コーディング": ["コーディング", "Copilot", "Cursor", "コード生成", "Claude Code", "プログラミング", "開発支援", "コードレビュー"],
+    "エージェント": ["エージェント", "agent", "RAG", "MCP", "自律", "ワークフロー", "ツール呼び出し"],
+    "プロンプト": ["プロンプト", "prompt", "プロンプトエンジニアリング"],
+    "業務活用": ["業務", "効率化", "DX", "導入事例", "ビジネス", "活用事例", "生産性"],
+    "規制・動向": ["規制", "ガイドライン", "著作権", "AI Act", "政府", "法律", "倫理", "セキュリティ"]
+  }
+}
