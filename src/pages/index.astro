@@ -319,6 +319,10 @@ function formatDate(iso: string | null): string {
     flex-direction: column;
     gap: 8px;
   }
+  /* hidden 属性での非表示を確実に効かせる（.card の display:flex に勝たせる） */
+  .card[hidden] {
+    display: none;
+  }
   .card-head {
     display: flex;
     justify-content: space-between;
