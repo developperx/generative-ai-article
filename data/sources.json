@@ -1,0 +1,95 @@
+{
+  "comment": "取得対象のソース一覧。すべて公式RSS/公開APIのみを使用（HTMLスクレイピングはしません）。新しいソースを足したい場合はこの配列に1要素追加するだけです。keywordFilter:true のソースは生成AI関連キーワードに一致した記事のみ取り込みます（広範なメディア向け）。enabled:false で一時的に無効化できます。",
+  "sources": [
+    {
+      "id": "googlenews-seisei-ai",
+      "name": "Google ニュース（生成AI）",
+      "type": "rss",
+      "url": "https://news.google.com/rss/search?q=%E7%94%9F%E6%88%90AI%20when%3A14d&hl=ja&gl=JP&ceid=JP:ja",
+      "defaultTags": [],
+      "keywordFilter": false,
+      "enabled": true
+    },
+    {
+      "id": "googlenews-chatgpt",
+      "name": "Google ニュース（ChatGPT/LLM）",
+      "type": "rss",
+      "url": "https://news.google.com/rss/search?q=ChatGPT%20OR%20%E5%A4%A7%E8%A6%8F%E6%A8%A1%E8%A8%80%E8%AA%9E%E3%83%A2%E3%83%87%E3%83%AB%20when%3A14d&hl=ja&gl=JP&ceid=JP:ja",
+      "defaultTags": ["LLM"],
+      "keywordFilter": false,
+      "enabled": true
+    },
+    {
+      "id": "hatena-seisei-ai",
+      "name": "はてなブックマーク（生成AI）",
+      "type": "rss",
+      "url": "https://b.hatena.ne.jp/q/%E7%94%9F%E6%88%90AI?mode=rss&sort=recent",
+      "defaultTags": [],
+      "keywordFilter": false,
+      "enabled": true
+    },
+    {
+      "id": "qiita-seisei-ai",
+      "name": "Qiita（生成AIタグ）",
+      "type": "rss",
+      "url": "https://qiita.com/tags/%E7%94%9F%E6%88%90ai/feed",
+      "defaultTags": [],
+      "keywordFilter": false,
+      "enabled": true
+    },
+    {
+      "id": "qiita-llm",
+      "name": "Qiita（LLMタグ）",
+      "type": "rss",
+      "url": "https://qiita.com/tags/llm/feed",
+      "defaultTags": ["LLM"],
+      "keywordFilter": false,
+      "enabled": true
+    },
+    {
+      "id": "zenn-seisei-ai",
+      "name": "Zenn（生成AIトピック）",
+      "type": "rss",
+      "url": "https://zenn.dev/topics/%E7%94%9F%E6%88%90ai/feed",
+      "defaultTags": [],
+      "keywordFilter": false,
+      "enabled": true
+    },
+    {
+      "id": "zenn-llm",
+      "name": "Zenn（LLMトピック）",
+      "type": "rss",
+      "url": "https://zenn.dev/topics/llm/feed",
+      "defaultTags": ["LLM"],
+      "keywordFilter": false,
+      "enabled": true
+    },
+    {
+      "id": "itmedia-aiplus",
+      "name": "ITmedia AI＋",
+      "type": "rss",
+      "url": "https://rss.itmedia.co.jp/rss/2.0/aiplus.xml",
+      "defaultTags": [],
+      "keywordFilter": false,
+      "enabled": true
+    },
+    {
+      "id": "publickey",
+      "name": "Publickey",
+      "type": "rss",
+      "url": "https://www.publickey1.jp/atom.xml",
+      "defaultTags": [],
+      "keywordFilter": true,
+      "enabled": true
+    },
+    {
+      "id": "gigazine",
+      "name": "GIGAZINE",
+      "type": "rss",
+      "url": "https://gigazine.net/news/rss_2.0/",
+      "defaultTags": [],
+      "keywordFilter": true,
+      "enabled": true
+    }
+  ]
+}
