@@ -1,32 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import data from '../../data/items.json';
+import sourcesData from '../../data/sources.json';
 
-const { items, updatedAt, sources = [] } = data as {
-  items: any[];
-  updatedAt: string;
-  sources: { id: string; name: string }[];
-};
-
-const allTags = [...new Set(items.flatMap((i) => i.tags ?? []))].sort();
-const sourceNames = sources.length
-  ? sources.map((s) => s.name)
-  : [...new Set(items.map((i) => i.source))];
-
-const updatedLabel = new Intl.DateTimeFormat('ja-JP', {
-  dateStyle: 'medium',
-  timeStyle: 'short',
-  timeZone: 'Asia/Tokyo',
-}).format(new Date(updatedAt));
-
-function formatDate(iso: string | null): string {
-  if (!iso) return '—';
-  return new Intl.DateTimeFormat('ja-JP', {
-    month: 'numeric',
-    day: 'numeric',
-    timeZone: 'Asia/Tokyo',
-  }).format(new Date(iso));
-}
+// ソース名の一覧だけビルド時に埋め込む（変化が少なくキャッシュされても問題ない）
+const sourceNames = sourcesData.sources.map((s: { name: string }) => s.name);
 ---
 
 <Layout>
@@ -72,7 +49,7 @@ function formatDate(iso: string | null): string {
         <div class="select-wrap">
           <select id="source-filter" aria-label="出典で絞り込み">
             <option value="">すべての出典</option>
-            {sourceNames.map((name) => <option value={name}>{name}</option>)}
+            {sourceNames.map((name: string) => <option value={name}>{name}</option>)}
           </select>
         </div>
         <div class="select-wrap">
@@ -90,60 +67,34 @@ function formatDate(iso: string | null): string {
       </div>
 
       <div class="tag-chips" id="tag-chips" role="group" aria-label="タグで絞り込み">
-        {allTags.map((tag) => (
-          <button class="chip" type="button" data-tag={tag} aria-pressed="false">{tag}</button>
-        ))}
+        <!-- タグはデータ取得後にJSで挿入 -->
       </div>
     </section>
 
     <div class="meta-bar">
-      <span class="meta-count"><span id="result-count">{items.length}</span> 件</span>
-      <span class="updated">最終更新: {updatedLabel}（JST）</span>
+      <span class="meta-count"><span id="result-count">…</span> 件</span>
+      <span id="updated-label" class="updated"></span>
     </div>
 
     <section id="feed" class="feed" aria-live="polite">
-      {items.map((item, i) => (
-        <article
-          class="card"
-          data-id={item.id}
-          data-source={item.source}
-          data-tags={(item.tags ?? []).join('||')}
-          data-date={item.publishedAt ?? ''}
-          data-bm={item.bookmarkCount ?? 0}
-          data-title={`${item.title} ${item.snippet ?? ''}`.toLowerCase()}
-          style={`animation-delay: ${Math.min(i * 0.04, 0.6)}s`}
-        >
-          <div class="card-head">
-            <span class="source-badge">{item.source}</span>
-            <button
-              class="save-btn"
-              type="button"
-              aria-label="あとで読むに追加"
-              aria-pressed="false"
-              data-save={item.id}
-            >★</button>
-          </div>
-          <h2 class="card-title">
-            <a href={item.url} target="_blank" rel="noopener noreferrer">{item.title}</a>
-          </h2>
-          {item.snippet && <p class="card-snippet">{item.snippet}</p>}
-          <div class="card-foot">
-            <span class="date">{formatDate(item.publishedAt)}</span>
-            {item.bookmarkCount != null && (
-              <span class="bm">★ {item.bookmarkCount}</span>
-            )}
-            <span class="card-tags">
-              {(item.tags ?? []).map((t: string) => <span class="mini-tag">{t}</span>)}
-            </span>
-          </div>
-        </article>
-      ))}
+      <!-- スケルトンローダー（データ取得完了後に置き換わる） -->
+      <div class="skeleton-card" aria-hidden="true"></div>
+      <div class="skeleton-card" aria-hidden="true"></div>
+      <div class="skeleton-card" aria-hidden="true"></div>
+      <div class="skeleton-card" aria-hidden="true"></div>
+      <div class="skeleton-card" aria-hidden="true"></div>
+      <div class="skeleton-card" aria-hidden="true"></div>
     </section>
 
     <div id="empty-state" class="empty" hidden>
       <span class="empty-icon" aria-hidden="true">◎</span>
       <span>条件に一致する記事がありません</span>
       <button id="reset-filters" class="reset-btn" type="button">絞り込みをリセット</button>
+    </div>
+
+    <div id="error-state" class="empty" hidden>
+      <span class="empty-icon" aria-hidden="true">✕</span>
+      <span>データの読み込みに失敗しました。しばらく待ってから再読み込みしてください。</span>
     </div>
   </main>
 
@@ -385,6 +336,7 @@ function formatDate(iso: string | null): string {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
+    min-height: 32px;
   }
   .chip {
     border: 1px solid var(--border);
@@ -449,6 +401,19 @@ function formatDate(iso: string | null): string {
   }
   @media (min-width: 1000px) {
     .feed { grid-template-columns: 1fr 1fr 1fr; }
+  }
+
+  /* ========= Skeleton ========= */
+  .skeleton-card {
+    height: 160px;
+    background: linear-gradient(90deg, var(--border) 25%, var(--chip) 50%, var(--border) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+    border-radius: var(--radius);
+  }
+  @keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
   }
 
   /* ========= Cards ========= */
@@ -578,7 +543,7 @@ function formatDate(iso: string | null): string {
     letter-spacing: 0.01em;
   }
 
-  /* ========= Empty State ========= */
+  /* ========= Empty / Error State ========= */
   .empty {
     display: flex;
     flex-direction: column;
@@ -630,6 +595,32 @@ function formatDate(iso: string | null): string {
 </style>
 
 <script>
+  // ランタイムで items.json を取得してカードを描画する。
+  // ?t=Date.now() によるキャッシュバスティングで、モバイルブラウザのHTML
+  // キャッシュに関係なく常に最新データを取得できる。
+
+  const BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
+  const SAVED_KEY = 'savedItems';
+
+  type Item = {
+    id: string;
+    title: string;
+    url: string;
+    source: string;
+    sourceId: string;
+    tags: string[];
+    publishedAt: string | null;
+    snippet: string;
+    bookmarkCount: number | null;
+  };
+
+  type FeedData = {
+    updatedAt: string;
+    count: number;
+    sources: { id: string; name: string }[];
+    items: Item[];
+  };
+
   type Filters = {
     q: string;
     source: string;
@@ -639,16 +630,87 @@ function formatDate(iso: string | null): string {
     sort: string;
   };
 
-  const SAVED_KEY = 'savedItems';
   const getSaved = (): Set<string> =>
     new Set(JSON.parse(localStorage.getItem(SAVED_KEY) || '[]'));
   const setSaved = (s: Set<string>) =>
     localStorage.setItem(SAVED_KEY, JSON.stringify([...s]));
 
-  const cards = Array.from(document.querySelectorAll<HTMLElement>('.card'));
+  function formatDate(iso: string | null): string {
+    if (!iso) return '—';
+    return new Intl.DateTimeFormat('ja-JP', {
+      month: 'numeric',
+      day: 'numeric',
+      timeZone: 'Asia/Tokyo',
+    }).format(new Date(iso));
+  }
+
+  function escHtml(s: string): string {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  function escAttr(s: string): string {
+    return s.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function makeCard(item: Item, index: number): HTMLElement {
+    const saved = getSaved();
+    const article = document.createElement('article');
+    article.className = 'card';
+    article.dataset.id = item.id;
+    article.dataset.source = item.source;
+    article.dataset.tags = (item.tags ?? []).join('||');
+    article.dataset.date = item.publishedAt ?? '';
+    article.dataset.bm = String(item.bookmarkCount ?? 0);
+    article.dataset.title = `${item.title} ${item.snippet ?? ''}`.toLowerCase();
+    article.style.animationDelay = `${Math.min(index * 0.04, 0.6)}s`;
+
+    const bm = item.bookmarkCount != null
+      ? `<span class="bm">★ ${item.bookmarkCount}</span>` : '';
+    const snippet = item.snippet
+      ? `<p class="card-snippet">${escHtml(item.snippet)}</p>` : '';
+    const tags = (item.tags ?? [])
+      .map((t) => `<span class="mini-tag">${escHtml(t)}</span>`).join('');
+
+    article.innerHTML = `
+      <div class="card-head">
+        <span class="source-badge">${escHtml(item.source)}</span>
+        <button class="save-btn" type="button"
+          aria-label="あとで読むに追加"
+          aria-pressed="${saved.has(item.id)}"
+          data-save="${item.id}">★</button>
+      </div>
+      <h2 class="card-title">
+        <a href="${escAttr(item.url)}" target="_blank" rel="noopener noreferrer">${escHtml(item.title)}</a>
+      </h2>
+      ${snippet}
+      <div class="card-foot">
+        <span class="date">${formatDate(item.publishedAt)}</span>
+        ${bm}
+        <span class="card-tags">${tags}</span>
+      </div>`;
+
+    const saveBtn = article.querySelector<HTMLButtonElement>('[data-save]')!;
+    saveBtn.addEventListener('click', () => {
+      const cur = getSaved();
+      if (cur.has(item.id)) cur.delete(item.id);
+      else cur.add(item.id);
+      setSaved(cur);
+      saveBtn.setAttribute('aria-pressed', String(cur.has(item.id)));
+      if (filters.savedOnly) apply();
+    });
+
+    return article;
+  }
+
   const feed = document.getElementById('feed')!;
   const resultCount = document.getElementById('result-count')!;
+  const updatedLabel = document.getElementById('updated-label')!;
   const emptyState = document.getElementById('empty-state')!;
+  const errorState = document.getElementById('error-state')!;
+  const tagChips = document.getElementById('tag-chips')!;
+  const search = document.getElementById('search') as HTMLInputElement;
+
+  let allCards: HTMLElement[] = [];
 
   const filters: Filters = {
     q: '',
@@ -659,32 +721,13 @@ function formatDate(iso: string | null): string {
     sort: 'new',
   };
 
-  // --- あとで読む（localStorage） ---
-  function initSaved() {
-    const saved = getSaved();
-    document.querySelectorAll<HTMLButtonElement>('[data-save]').forEach((btn) => {
-      const id = btn.dataset.save!;
-      const on = saved.has(id);
-      btn.setAttribute('aria-pressed', String(on));
-      btn.addEventListener('click', () => {
-        const cur = getSaved();
-        if (cur.has(id)) cur.delete(id);
-        else cur.add(id);
-        setSaved(cur);
-        btn.setAttribute('aria-pressed', String(cur.has(id)));
-        if (filters.savedOnly) apply();
-      });
-    });
-  }
-
-  // --- フィルタ適用 ---
   function apply() {
     const saved = getSaved();
     const now = Date.now();
     let visible = 0;
-
     const shown: HTMLElement[] = [];
-    for (const card of cards) {
+
+    for (const card of allCards) {
       const title = card.dataset.title || '';
       const source = card.dataset.source || '';
       const tags = (card.dataset.tags || '').split('||').filter(Boolean);
@@ -702,17 +745,12 @@ function formatDate(iso: string | null): string {
       }
 
       card.hidden = !ok;
-      if (ok) {
-        visible++;
-        shown.push(card);
-      }
+      if (ok) { visible++; shown.push(card); }
     }
 
-    // 並べ替え（表示中のカードのみ並び替えてDOMに反映）
     shown.sort((a, b) => {
-      if (filters.sort === 'bookmarks') {
+      if (filters.sort === 'bookmarks')
         return Number(b.dataset.bm) - Number(a.dataset.bm);
-      }
       return (Date.parse(b.dataset.date || '0') || 0) - (Date.parse(a.dataset.date || '0') || 0);
     });
     shown.forEach((c) => feed.appendChild(c));
@@ -721,13 +759,80 @@ function formatDate(iso: string | null): string {
     emptyState.hidden = visible !== 0;
   }
 
+  function buildTagChips(tags: string[]) {
+    tagChips.innerHTML = '';
+    tags.forEach((tag) => {
+      const btn = document.createElement('button');
+      btn.className = 'chip';
+      btn.type = 'button';
+      btn.dataset.tag = tag;
+      btn.textContent = tag;
+      btn.setAttribute('aria-pressed', 'false');
+      btn.addEventListener('click', () => {
+        if (filters.tags.has(tag)) {
+          filters.tags.delete(tag);
+          btn.setAttribute('aria-pressed', 'false');
+        } else {
+          filters.tags.add(tag);
+          btn.setAttribute('aria-pressed', 'true');
+        }
+        apply();
+      });
+      tagChips.appendChild(btn);
+    });
+  }
+
+  function resetFilters() {
+    filters.q = '';
+    filters.source = '';
+    filters.period = '';
+    filters.savedOnly = false;
+    filters.tags.clear();
+    search.value = '';
+    (document.getElementById('source-filter') as HTMLSelectElement).value = '';
+    (document.getElementById('period-filter') as HTMLSelectElement).value = '';
+    (document.getElementById('saved-only') as HTMLInputElement).checked = false;
+    tagChips.querySelectorAll<HTMLButtonElement>('.chip').forEach((chip) =>
+      chip.setAttribute('aria-pressed', 'false'),
+    );
+    apply();
+  }
+
+  async function loadData() {
+    try {
+      // ?t=Date.now() でブラウザキャッシュをバイパスし常に最新データを取得
+      const res = await fetch(`${BASE}/data/items.json?t=${Date.now()}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data: FeedData = await res.json();
+
+      feed.innerHTML = '';
+      errorState.hidden = true;
+
+      allCards = data.items.map((item, i) => makeCard(item, i));
+      allCards.forEach((c) => feed.appendChild(c));
+
+      const allTags = [...new Set(data.items.flatMap((i) => i.tags ?? []))].sort();
+      buildTagChips(allTags);
+
+      const label = new Intl.DateTimeFormat('ja-JP', {
+        dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Tokyo',
+      }).format(new Date(data.updatedAt));
+      updatedLabel.textContent = `最終更新: ${label}（JST）`;
+
+      apply();
+    } catch (err) {
+      console.error('items.json の取得に失敗しました:', err);
+      feed.innerHTML = '';
+      errorState.hidden = false;
+      resultCount.textContent = '—';
+    }
+  }
+
   // --- イベント配線 ---
-  const search = document.getElementById('search') as HTMLInputElement;
   search.addEventListener('input', () => {
     filters.q = search.value.trim().toLowerCase();
     apply();
   });
-
   (document.getElementById('source-filter') as HTMLSelectElement).addEventListener('change', (e) => {
     filters.source = (e.target as HTMLSelectElement).value;
     apply();
@@ -744,37 +849,7 @@ function formatDate(iso: string | null): string {
     filters.savedOnly = (e.target as HTMLInputElement).checked;
     apply();
   });
-
-  document.querySelectorAll<HTMLButtonElement>('.chip').forEach((chip) => {
-    chip.addEventListener('click', () => {
-      const tag = chip.dataset.tag!;
-      if (filters.tags.has(tag)) {
-        filters.tags.delete(tag);
-        chip.setAttribute('aria-pressed', 'false');
-      } else {
-        filters.tags.add(tag);
-        chip.setAttribute('aria-pressed', 'true');
-      }
-      apply();
-    });
-  });
-
-  // --- 絞り込みリセット（空状態の次アクション） ---
-  document.getElementById('reset-filters')?.addEventListener('click', () => {
-    filters.q = '';
-    filters.source = '';
-    filters.period = '';
-    filters.savedOnly = false;
-    filters.tags.clear();
-    search.value = '';
-    (document.getElementById('source-filter') as HTMLSelectElement).value = '';
-    (document.getElementById('period-filter') as HTMLSelectElement).value = '';
-    (document.getElementById('saved-only') as HTMLInputElement).checked = false;
-    document.querySelectorAll<HTMLButtonElement>('.chip').forEach((chip) =>
-      chip.setAttribute('aria-pressed', 'false'),
-    );
-    apply();
-  });
+  document.getElementById('reset-filters')?.addEventListener('click', resetFilters);
 
   // --- テーマ切り替え ---
   const themeToggle = document.getElementById('theme-toggle')!;
@@ -790,6 +865,5 @@ function formatDate(iso: string | null): string {
     syncIcon();
   });
 
-  initSaved();
-  apply();
+  loadData();
 </script>
