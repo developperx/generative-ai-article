@@ -108,7 +108,9 @@ const sourceNames = sourcesData.sources.map((s: { name: string }) => s.name);
   </footer>
 </Layout>
 
-<style>
+<!-- is:global: カードやタグは実行時にJSで生成され Astro のスコープ属性が付かないため、
+     スタイルをグローバルにして動的生成要素にも確実に適用する -->
+<style is:global>
   /* ========= Layout ========= */
   .wrap {
     width: 100%;
