@@ -1,0 +1,151 @@
+{
+  "updatedAt": "2026-06-14T06:00:00.000Z",
+  "count": 12,
+  "_note": "これは初期表示用のサンプルデータです。GitHub Actions（または `npm run fetch`）が実行されると、実際のRSS/APIから取得した最新データで上書きされます。",
+  "sources": [
+    { "id": "googlenews-seisei-ai", "name": "Google ニュース（生成AI）" },
+    { "id": "googlenews-chatgpt", "name": "Google ニュース（ChatGPT/LLM）" },
+    { "id": "hatena-seisei-ai", "name": "はてなブックマーク（生成AI）" },
+    { "id": "qiita-seisei-ai", "name": "Qiita（生成AIタグ）" },
+    { "id": "qiita-llm", "name": "Qiita（LLMタグ）" },
+    { "id": "zenn-seisei-ai", "name": "Zenn（生成AIトピック）" },
+    { "id": "zenn-llm", "name": "Zenn（LLMトピック）" },
+    { "id": "itmedia-aiplus", "name": "ITmedia AI＋" },
+    { "id": "publickey", "name": "Publickey" },
+    { "id": "gigazine", "name": "GIGAZINE" }
+  ],
+  "items": [
+    {
+      "id": "sample0000000001",
+      "title": "【サンプル】生成AIを業務に導入する際のチェックリスト10選",
+      "url": "https://example.com/sample/1",
+      "source": "Qiita（生成AIタグ）",
+      "sourceId": "qiita-seisei-ai",
+      "tags": ["業務活用", "プロンプト"],
+      "publishedAt": "2026-06-14T05:30:00.000Z",
+      "snippet": "これはサンプル記事です。実データはCI実行時に各RSS/APIから自動取得され、ここに最新のトレンド記事が並びます。",
+      "bookmarkCount": null
+    },
+    {
+      "id": "sample0000000002",
+      "title": "【サンプル】最新LLMの性能比較とコスト最適化の考え方",
+      "url": "https://example.com/sample/2",
+      "source": "Zenn（LLMトピック）",
+      "sourceId": "zenn-llm",
+      "tags": ["LLM"],
+      "publishedAt": "2026-06-14T03:10:00.000Z",
+      "snippet": "これはサンプル記事です。タイトル・出典・日付・抜粋・元記事リンクのみを表示し、全文は転載しません。",
+      "bookmarkCount": null
+    },
+    {
+      "id": "sample0000000003",
+      "title": "【サンプル】画像生成AIの著作権ガイドライン最新動向",
+      "url": "https://example.com/sample/3",
+      "source": "ITmedia AI＋",
+      "sourceId": "itmedia-aiplus",
+      "tags": ["画像生成", "規制・動向"],
+      "publishedAt": "2026-06-13T22:45:00.000Z",
+      "snippet": "これはサンプル記事です。タグは記事タイトル・抜粋からキーワードで自動付与されます。",
+      "bookmarkCount": null
+    },
+    {
+      "id": "sample0000000004",
+      "title": "【サンプル】AIエージェントとMCPで業務ワークフローを自動化する",
+      "url": "https://example.com/sample/4",
+      "source": "はてなブックマーク（生成AI）",
+      "sourceId": "hatena-seisei-ai",
+      "tags": ["エージェント", "業務活用"],
+      "publishedAt": "2026-06-13T18:20:00.000Z",
+      "snippet": "これはサンプル記事です。はてなブックマークのソースではブックマーク数を取得し、人気順で並べ替えできます。",
+      "bookmarkCount": 320
+    },
+    {
+      "id": "sample0000000005",
+      "title": "【サンプル】コーディング支援AIの実践活用テクニック",
+      "url": "https://example.com/sample/5",
+      "source": "Qiita（LLMタグ）",
+      "sourceId": "qiita-llm",
+      "tags": ["コーディング", "LLM"],
+      "publishedAt": "2026-06-13T12:00:00.000Z",
+      "snippet": "これはサンプル記事です。キーワード検索や出典・タグ・期間での絞り込みが行えます。",
+      "bookmarkCount": null
+    },
+    {
+      "id": "sample0000000006",
+      "title": "【サンプル】動画生成AIの最新モデルを試してみた",
+      "url": "https://example.com/sample/6",
+      "source": "Zenn（生成AIトピック）",
+      "sourceId": "zenn-seisei-ai",
+      "tags": ["動画生成"],
+      "publishedAt": "2026-06-12T20:15:00.000Z",
+      "snippet": "これはサンプル記事です。「あとで読む」に登録するとブラウザ内（localStorage）に保存されます。",
+      "bookmarkCount": null
+    },
+    {
+      "id": "sample0000000007",
+      "title": "【サンプル】生成AI市場の最新ニュースまとめ",
+      "url": "https://example.com/sample/7",
+      "source": "Google ニュース（生成AI）",
+      "sourceId": "googlenews-seisei-ai",
+      "tags": [],
+      "publishedAt": "2026-06-12T09:40:00.000Z",
+      "snippet": "これはサンプル記事です。Google ニュースRSSから生成AI関連の最新ニュースを集約します。",
+      "bookmarkCount": null
+    },
+    {
+      "id": "sample0000000008",
+      "title": "【サンプル】プロンプトエンジニアリング再入門",
+      "url": "https://example.com/sample/8",
+      "source": "はてなブックマーク（生成AI）",
+      "sourceId": "hatena-seisei-ai",
+      "tags": ["プロンプト"],
+      "publishedAt": "2026-06-11T14:05:00.000Z",
+      "snippet": "これはサンプル記事です。実データ取得後はこのカードが実際の記事に置き換わります。",
+      "bookmarkCount": 158
+    },
+    {
+      "id": "sample0000000009",
+      "title": "【サンプル】音声生成AIの活用事例と最新ツール",
+      "url": "https://example.com/sample/9",
+      "source": "ITmedia AI＋",
+      "sourceId": "itmedia-aiplus",
+      "tags": ["音声・音楽", "業務活用"],
+      "publishedAt": "2026-06-10T11:30:00.000Z",
+      "snippet": "これはサンプル記事です。タグや出典でフィルタして関心領域だけを表示できます。",
+      "bookmarkCount": null
+    },
+    {
+      "id": "sample0000000010",
+      "title": "【サンプル】ChatGPTの新機能と業務インパクト",
+      "url": "https://example.com/sample/10",
+      "source": "Google ニュース（ChatGPT/LLM）",
+      "sourceId": "googlenews-chatgpt",
+      "tags": ["LLM", "業務活用"],
+      "publishedAt": "2026-06-09T08:00:00.000Z",
+      "snippet": "これはサンプル記事です。期間フィルタ（今日・今週・今月）で新しい話題に素早く絞り込めます。",
+      "bookmarkCount": null
+    },
+    {
+      "id": "sample0000000011",
+      "title": "【サンプル】RAG構成のベストプラクティス2026",
+      "url": "https://example.com/sample/11",
+      "source": "Zenn（LLMトピック）",
+      "sourceId": "zenn-llm",
+      "tags": ["エージェント", "LLM"],
+      "publishedAt": "2026-06-08T16:25:00.000Z",
+      "snippet": "これはサンプル記事です。技術メディア（Publickey/GIGAZINE）は生成AI関連のみ自動抽出します。",
+      "bookmarkCount": null
+    },
+    {
+      "id": "sample0000000012",
+      "title": "【サンプル】生成AI規制の国内外動向アップデート",
+      "url": "https://example.com/sample/12",
+      "source": "Publickey",
+      "sourceId": "publickey",
+      "tags": ["規制・動向"],
+      "publishedAt": "2026-06-07T10:10:00.000Z",
+      "snippet": "これはサンプル記事です。CIが定期実行されると常に最新トレンドへ更新されます。",
+      "bookmarkCount": null
+    }
+  ]
+}

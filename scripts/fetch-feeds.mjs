@@ -2,7 +2,7 @@
 //
 // data/sources.json で定義した公式RSS/公開APIを取得し、
 // 正規化 → キーワードフィルタ → タグ付け → 重複排除 → 日付降順ソート
-// を行って data/items.json に書き出します。
+// を行って public/data/items.json に書き出します（ランタイムfetch用）。
 //
 // ・HTMLスクレイピングは行いません（RSS/APIのみ）。
 // ・全文は保存せず、タイトル・出典・日付・短い抜粋・元記事URLのみ扱います。
@@ -16,7 +16,8 @@ import Parser from 'rss-parser';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
-const DATA_DIR = path.join(ROOT, 'data');
+const DATA_DIR = path.join(ROOT, 'data');       // sources.json / tag-rules.json の場所
+const PUBLIC_DATA_DIR = path.join(ROOT, 'public', 'data'); // items.json の出力先
 
 const MAX_ITEMS = 600; // 出力する最大件数
 const SNIPPET_MAX = 180; // 抜粋の最大文字数
@@ -178,11 +179,12 @@ async function main() {
     items: deduped,
   };
 
-  await fs.writeFile(path.join(DATA_DIR, 'items.json'), JSON.stringify(output, null, 2) + '\n', 'utf-8');
+  await fs.mkdir(PUBLIC_DATA_DIR, { recursive: true });
+  await fs.writeFile(path.join(PUBLIC_DATA_DIR, 'items.json'), JSON.stringify(output, null, 2) + '\n', 'utf-8');
 
   console.log('ソース取得結果:');
   console.log(report.join('\n'));
-  console.log(`\n合計 ${all.length} 件 → 重複排除後 ${deduped.length} 件を data/items.json に書き出しました。`);
+  console.log(`\n合計 ${all.length} 件 → 重複排除後 ${deduped.length} 件を public/data/items.json に書き出しました。`);
 }
 
 main().catch((err) => {
