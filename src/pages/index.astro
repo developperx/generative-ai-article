@@ -432,6 +432,10 @@ const sourceNames = sourcesData.sources.map((s: { name: string }) => s.name);
     display: flex;
     flex-direction: column;
     gap: 8px;
+    /* グリッド項目の既定 min-width:auto を解除し、長い文字列で
+       カードがカラム幅を超えてはみ出すのを防ぐ */
+    min-width: 0;
+    overflow: hidden;
     transition: border-color 0.2s ease-out, border-left-color 0.2s ease-out, box-shadow 0.2s ease-out, transform 0.2s ease-out;
     animation: cardReveal 0.45s ease-out both;
   }
@@ -483,6 +487,8 @@ const sourceNames = sourcesData.sources.map((s: { name: string }) => s.name);
     font-weight: 700;
     line-height: 1.5;
     text-wrap: balance;
+    /* URL等の折り返せない長い文字列もカード内で改行させる */
+    overflow-wrap: anywhere;
   }
   .card-title a { text-decoration: none; }
   .card-title a:hover {
@@ -497,6 +503,7 @@ const sourceNames = sourcesData.sources.map((s: { name: string }) => s.name);
     color: var(--muted);
     line-height: 1.65;
     text-wrap: pretty;
+    overflow-wrap: anywhere;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
