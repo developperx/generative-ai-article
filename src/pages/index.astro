@@ -602,7 +602,10 @@ const sourceNames = sourcesData.sources.map((s: { name: string }) => s.name);
   // キャッシュに関係なく常に最新データを取得できる。
 
   const BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
-  const SAVED_KEY = 'savedItems';
+  // 保存記事はデータ本体ごと localStorage に保持する（id だけだと items.json から
+  // 記事が押し出された後にカードを再生成できず、一覧から消えてしまうため）。
+  const SAVED_MAP_KEY = 'savedArticles'; // { [id]: Item }
+  const LEGACY_KEY = 'savedItems';       // 旧形式（id の配列）。後方互換のため読み取り対応
 
   type Item = {
     id: string;
@@ -632,10 +635,24 @@ const sourceNames = sourcesData.sources.map((s: { name: string }) => s.name);
     sort: string;
   };
 
-  const getSaved = (): Set<string> =>
-    new Set(JSON.parse(localStorage.getItem(SAVED_KEY) || '[]'));
-  const setSaved = (s: Set<string>) =>
-    localStorage.setItem(SAVED_KEY, JSON.stringify([...s]));
+  function getSavedMap(): Record<string, Item> {
+    try { return JSON.parse(localStorage.getItem(SAVED_MAP_KEY) || '{}'); } catch { return {}; }
+  }
+  function setSavedMap(m: Record<string, Item>) {
+    localStorage.setItem(SAVED_MAP_KEY, JSON.stringify(m));
+  }
+  function getLegacyIds(): Set<string> {
+    try { return new Set<string>(JSON.parse(localStorage.getItem(LEGACY_KEY) || '[]')); } catch { return new Set(); }
+  }
+  // 保存済み判定に使う id 集合（新形式のキー ＋ 旧形式の id）
+  function getSavedIds(): Set<string> {
+    return new Set<string>([...Object.keys(getSavedMap()), ...getLegacyIds()]);
+  }
+  // 旧形式から指定 id を取り除く（保存解除時の判定食い違いを防ぐ）
+  function pruneLegacy(id: string) {
+    const ids = getLegacyIds();
+    if (ids.delete(id)) localStorage.setItem(LEGACY_KEY, JSON.stringify([...ids]));
+  }
 
   function formatDate(iso: string | null): string {
     if (!iso) return '—';
@@ -654,8 +671,8 @@ const sourceNames = sourcesData.sources.map((s: { name: string }) => s.name);
     return s.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
-  function makeCard(item: Item, index: number): HTMLElement {
-    const saved = getSaved();
+  function makeCard(item: Item, index: number, injected = false): HTMLElement {
+    const saved = getSavedIds();
     const article = document.createElement('article');
     article.className = 'card';
     article.dataset.id = item.id;
@@ -664,6 +681,8 @@ const sourceNames = sourcesData.sources.map((s: { name: string }) => s.name);
     article.dataset.date = item.publishedAt ?? '';
     article.dataset.bm = String(item.bookmarkCount ?? 0);
     article.dataset.title = `${item.title} ${item.snippet ?? ''}`.toLowerCase();
+    // injected: items.json には無いが保存されている記事（一覧維持のため補完表示）
+    if (injected) article.dataset.injected = '1';
     article.style.animationDelay = `${Math.min(index * 0.04, 0.6)}s`;
 
     const bm = item.bookmarkCount != null
@@ -693,12 +712,18 @@ const sourceNames = sourcesData.sources.map((s: { name: string }) => s.name);
 
     const saveBtn = article.querySelector<HTMLButtonElement>('[data-save]')!;
     saveBtn.addEventListener('click', () => {
-      const cur = getSaved();
-      if (cur.has(item.id)) cur.delete(item.id);
-      else cur.add(item.id);
-      setSaved(cur);
-      saveBtn.setAttribute('aria-pressed', String(cur.has(item.id)));
-      if (filters.savedOnly) apply();
+      const map = getSavedMap();
+      if (map[item.id]) {
+        delete map[item.id];
+        pruneLegacy(item.id); // 旧形式に残っていると解除が効かないため除去
+      } else {
+        // データ本体ごと保存しておくことで、後で items.json から消えても再表示できる
+        map[item.id] = item;
+      }
+      setSavedMap(map);
+      saveBtn.setAttribute('aria-pressed', String(!!map[item.id]));
+      // 補完表示カードや「あとで読むのみ」表示を即時反映するため常に再適用
+      apply();
     });
 
     return article;
@@ -724,7 +749,7 @@ const sourceNames = sourcesData.sources.map((s: { name: string }) => s.name);
   };
 
   function apply() {
-    const saved = getSaved();
+    const saved = getSavedIds();
     const now = Date.now();
     let visible = 0;
     const shown: HTMLElement[] = [];
@@ -737,6 +762,8 @@ const sourceNames = sourcesData.sources.map((s: { name: string }) => s.name);
       const id = card.dataset.id!;
 
       let ok = true;
+      // 補完表示カードは保存が外れたら表示しない（feedには存在しないため）
+      if (card.dataset.injected === '1' && !saved.has(id)) ok = false;
       if (filters.q && !title.includes(filters.q)) ok = false;
       if (filters.source && source !== filters.source) ok = false;
       if (filters.savedOnly && !saved.has(id)) ok = false;
@@ -810,10 +837,29 @@ const sourceNames = sourcesData.sources.map((s: { name: string }) => s.name);
       feed.innerHTML = '';
       errorState.hidden = true;
 
+      const feedIds = new Set(data.items.map((i) => i.id));
+      const savedMap = getSavedMap();
+
+      // 旧形式(id のみ)で保存された記事が今回のfeedに含まれていれば、データ本体を保存し直す（移行）
+      const legacy = getLegacyIds();
+      if (legacy.size) {
+        let migrated = false;
+        for (const it of data.items) {
+          if (legacy.has(it.id) && !savedMap[it.id]) { savedMap[it.id] = it; migrated = true; }
+        }
+        if (migrated) setSavedMap(savedMap);
+      }
+
+      // feed の記事カード
       allCards = data.items.map((item, i) => makeCard(item, i));
+
+      // feed に無い保存記事を補完（時間が経って items.json から消えても一覧に残す）
+      const injected = Object.values(savedMap).filter((it) => it && !feedIds.has(it.id));
+      injected.forEach((item, i) => allCards.push(makeCard(item, data.items.length + i, true)));
+
       allCards.forEach((c) => feed.appendChild(c));
 
-      const allTags = [...new Set(data.items.flatMap((i) => i.tags ?? []))].sort();
+      const allTags = [...new Set([...data.items, ...injected].flatMap((i) => i.tags ?? []))].sort();
       buildTagChips(allTags);
 
       const label = new Intl.DateTimeFormat('ja-JP', {
