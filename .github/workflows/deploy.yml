@@ -1,68 +1,21 @@
-name: Build & Deploy (生成AIトレンド)
+name: 定期データ更新トリガー (Vercel)
 
-# 最新データを取得 → 静的ビルド → GitHub Pages へデプロイ。
-# ・push / 手動実行 / 定期実行(cron) で起動します。
-# ・cron は UTC。'0 0,8,16 * * *' は日本時間でおおよそ 9:00 / 17:00 / 1:00 に相当（1日3回）。
-# ・ビルド時に最新RSS/APIを取得するため、公開サイトは常に最新の状態になります。
+# Vercel の Deploy Hook を呼んで再ビルド＆デプロイをトリガーする。
+# ビルド中に npm run fetch が走り、最新RSS/APIデータが取得される。
+# cron は UTC。'0 0,8,16 * * *' は日本時間でおおよそ 9:00 / 17:00 / 1:00 に相当（1日3回）。
+#
+# 事前準備:
+#   Vercel ダッシュボード → プロジェクト設定 → Git → Deploy Hooks でフックを作成し、
+#   そのURLを GitHub リポジトリの Secrets (VERCEL_DEPLOY_HOOK_URL) に登録すること。
 
 on:
-  push:
-    branches: [main]
-  workflow_dispatch:
   schedule:
     - cron: '0 0,8,16 * * *'
-
-# GitHub Pages へのデプロイに必要な権限
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# 同時実行は1つに制限（古い実行はキャンセル）
-concurrency:
-  group: pages
-  cancel-in-progress: true
+  workflow_dispatch:
 
 jobs:
-  build:
+  trigger:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      # 最新トレンドを取得（1ソースの失敗で全体を止めない設計。
-      # 取得が0件でもリポジトリのデータでビルドは継続）
-      - name: Fetch latest trends
-        run: npm run fetch
-        continue-on-error: true
-
-      - name: Build site
-        run: npm run build
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Vercel 再ビルドをトリガー
+        run: curl -s -X POST "${{ secrets.VERCEL_DEPLOY_HOOK_URL }}"

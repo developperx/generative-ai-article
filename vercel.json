@@ -1,0 +1,13 @@
+{
+  "framework": "astro",
+  "buildCommand": "npm run fetch && npm run build",
+  "outputDirectory": "dist",
+  "headers": [
+    {
+      "source": "/data/items.json",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    }
+  ]
+}
