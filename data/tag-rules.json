@@ -1,22 +1,33 @@
 {
-  "comment": "ルールベースのタグ付け辞書。記事のタイトル＋抜粋に対して、各タグのキーワード（部分一致・大文字小文字を無視）が含まれていればそのタグを付与します。aiKeywords は keywordFilter:true のソースで『生成AI関連か』を判定するために使います。",
+  "comment": "ルールベースのタグ付け辞書。記事のタイトル＋抜粋に対して、各タグのキーワード（部分一致・大文字小文字を無視）が含まれていればそのタグを付与します。aiKeywords は keywordFilter:true のソースで『生成AI関連か』を判定するために使います。対象はシステム開発に関連する生成AIトピック中心（動画/音声系は対象外）。",
   "aiKeywords": [
-    "生成AI", "生成ai", "生成系AI", "ジェネレーティブ", "Generative AI",
-    "ChatGPT", "GPT-", "GPT4", "GPT5", "OpenAI", "Anthropic", "Claude",
-    "Gemini", "Llama", "Mistral", "Copilot", "Cursor",
-    "LLM", "大規模言語モデル", "言語モデル",
-    "画像生成", "動画生成", "Stable Diffusion", "Midjourney", "DALL",
-    "プロンプト", "AIエージェント", "RAG"
+    "生成AI", "生成ai", "生成系AI", "生成系", "ジェネレーティブ", "Generative AI",
+    "ChatGPT", "GPT-", "GPT4", "GPT5", "GPT-4o", "OpenAI", "o1", "o3",
+    "Anthropic", "Claude", "Sonnet", "Opus", "Haiku",
+    "Gemini", "Bard", "Gemma", "Llama", "Mistral", "Grok", "xAI",
+    "DeepSeek", "Qwen", "Phi", "Command R", "Cohere",
+    "Copilot", "Cursor", "Cline", "Windsurf", "Devin", "Bolt", "Replit",
+    "Perplexity", "NotebookLM", "Dify", "LangChain", "LlamaIndex", "Ollama",
+    "Hugging Face", "vLLM", "Manus",
+    "LLM", "大規模言語モデル", "言語モデル", "基盤モデル", "ファウンデーションモデル", "foundation model",
+    "マルチモーダル", "multimodal", "Transformer", "トランスフォーマー",
+    "ファインチューニング", "fine-tuning", "埋め込み", "embedding", "ベクトル検索", "ベクトルDB",
+    "推論モデル", "reasoning", "AGI", "チャットボット", "AIチャット",
+    "テキスト生成", "コード生成", "画像生成", "Stable Diffusion", "Midjourney", "DALL",
+    "プロンプト", "AIエージェント", "自律エージェント", "RAG", "MCP", "Model Context Protocol"
   ],
   "tags": {
-    "LLM": ["LLM", "大規模言語モデル", "言語モデル", "GPT", "Claude", "Gemini", "Llama", "Mistral", "ChatGPT"],
-    "画像生成": ["画像生成", "Stable Diffusion", "Midjourney", "DALL", "img2img", "text-to-image", "イラスト生成"],
-    "動画生成": ["動画生成", "Sora", "Runway", "video generation", "text-to-video"],
-    "音声・音楽": ["音声合成", "音声生成", "音楽生成", "TTS", "Whisper", "Suno", "ボイス"],
-    "コーディング": ["コーディング", "Copilot", "Cursor", "コード生成", "Claude Code", "プログラミング", "開発支援", "コードレビュー"],
-    "エージェント": ["エージェント", "agent", "RAG", "MCP", "自律", "ワークフロー", "ツール呼び出し"],
-    "プロンプト": ["プロンプト", "prompt", "プロンプトエンジニアリング"],
-    "業務活用": ["業務", "効率化", "DX", "導入事例", "ビジネス", "活用事例", "生産性"],
-    "規制・動向": ["規制", "ガイドライン", "著作権", "AI Act", "政府", "法律", "倫理", "セキュリティ"]
+    "LLM": ["LLM", "大規模言語モデル", "言語モデル", "GPT", "Claude", "Gemini", "Llama", "Mistral", "ChatGPT", "Grok", "DeepSeek", "Qwen", "Gemma", "Phi", "Command R", "Cohere", "o1", "o3", "Sonnet", "Opus", "Haiku", "推論モデル", "reasoning"],
+    "Claude": ["Claude", "Anthropic", "Sonnet", "Opus", "Haiku"],
+    "Claude Code": ["Claude Code", "claude-code", "クロードコード"],
+    "ChatGPT": ["ChatGPT", "GPT-4", "GPT-4o", "GPT-5", "GPT-3", "OpenAI", "o1", "o3"],
+    "Gemini": ["Gemini", "Bard", "Google DeepMind", "Gemma"],
+    "画像生成": ["画像生成", "Stable Diffusion", "Midjourney", "DALL", "img2img", "text-to-image", "イラスト生成", "Flux", "Imagen", "Nano Banana", "Adobe Firefly", "Firefly", "ComfyUI", "LoRA", "画像編集"],
+    "コーディング": ["コーディング", "Copilot", "Cursor", "コード生成", "Claude Code", "プログラミング", "開発支援", "コードレビュー", "Cline", "Windsurf", "Devin", "Bolt", "v0", "Replit", "GitHub Copilot", "ペアプログラミング", "バイブコーディング", "vibe coding", "IDE", "自動補完"],
+    "エージェント": ["エージェント", "agent", "RAG", "MCP", "自律", "ワークフロー", "ツール呼び出し", "Model Context Protocol", "マルチエージェント", "オーケストレーション", "Manus", "Computer Use", "ブラウザ操作", "function calling", "ツール連携"],
+    "プロンプト": ["プロンプト", "prompt", "プロンプトエンジニアリング", "システムプロンプト", "few-shot", "Chain of Thought", "思考の連鎖", "コンテキスト"],
+    "モデルリリース": ["リリース", "発表", "公開", "登場", "提供開始", "アップデート", "新モデル", "新バージョン", "一般提供", "ベータ", "プレビュー", "正式版", "release", "launch", "announce"],
+    "業務活用": ["業務", "効率化", "DX", "導入事例", "ビジネス", "活用事例", "生産性", "社内活用", "自動化", "業務効率", "コスト削減", "ナレッジ", "議事録", "資料作成"],
+    "規制・動向": ["規制", "ガイドライン", "著作権", "AI Act", "政府", "法律", "倫理", "セキュリティ", "プライバシー", "個人情報", "ハルシネーション", "ディープフェイク", "EU AI Act", "ガバナンス", "リスク", "学習データ", "オプトアウト"]
   }
 }

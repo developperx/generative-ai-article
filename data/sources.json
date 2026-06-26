@@ -26,7 +26,7 @@
       "url": "https://b.hatena.ne.jp/q/%E7%94%9F%E6%88%90AI?mode=rss&sort=recent",
       "defaultTags": [],
       "keywordFilter": false,
-      "enabled": true
+      "enabled": false
     },
     {
       "id": "qiita-seisei-ai",
@@ -65,13 +65,85 @@
       "enabled": true
     },
     {
+      "id": "zenn-claude",
+      "name": "Zenn（Claudeトピック）",
+      "type": "rss",
+      "url": "https://zenn.dev/topics/claude/feed",
+      "defaultTags": ["Claude"],
+      "keywordFilter": false,
+      "enabled": true
+    },
+    {
+      "id": "zenn-claudecode",
+      "name": "Zenn（Claude Codeトピック）",
+      "type": "rss",
+      "url": "https://zenn.dev/topics/claudecode/feed",
+      "defaultTags": ["Claude Code"],
+      "keywordFilter": false,
+      "enabled": true
+    },
+    {
+      "id": "zenn-chatgpt",
+      "name": "Zenn（ChatGPTトピック）",
+      "type": "rss",
+      "url": "https://zenn.dev/topics/chatgpt/feed",
+      "defaultTags": ["ChatGPT"],
+      "keywordFilter": false,
+      "enabled": true
+    },
+    {
+      "id": "zenn-gemini",
+      "name": "Zenn（Geminiトピック）",
+      "type": "rss",
+      "url": "https://zenn.dev/topics/gemini/feed",
+      "defaultTags": ["Gemini"],
+      "keywordFilter": false,
+      "enabled": true
+    },
+    {
+      "id": "qiita-claude",
+      "name": "Qiita（Claudeタグ）",
+      "type": "rss",
+      "url": "https://qiita.com/tags/claude/feed",
+      "defaultTags": ["Claude"],
+      "keywordFilter": false,
+      "enabled": true
+    },
+    {
+      "id": "qiita-claudecode",
+      "name": "Qiita（Claude Codeタグ）",
+      "type": "rss",
+      "url": "https://qiita.com/tags/claudecode/feed",
+      "defaultTags": ["Claude Code"],
+      "keywordFilter": false,
+      "enabled": true
+    },
+    {
+      "id": "qiita-chatgpt",
+      "name": "Qiita（ChatGPTタグ）",
+      "type": "rss",
+      "url": "https://qiita.com/tags/chatgpt/feed",
+      "defaultTags": ["ChatGPT"],
+      "keywordFilter": false,
+      "enabled": true
+    },
+    {
+      "id": "qiita-gemini",
+      "name": "Qiita（Geminiタグ）",
+      "type": "rss",
+      "url": "https://qiita.com/tags/gemini/feed",
+      "defaultTags": ["Gemini"],
+      "keywordFilter": false,
+      "enabled": true
+    },
+    {
       "id": "itmedia-aiplus",
       "name": "ITmedia AI＋",
       "type": "rss",
       "url": "https://rss.itmedia.co.jp/rss/2.0/aiplus.xml",
       "defaultTags": [],
       "keywordFilter": false,
-      "enabled": true
+      "enabled": false
     },
     {
       "id": "publickey",
